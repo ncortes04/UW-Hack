@@ -55,6 +55,9 @@ const SkinWizard = () => {
     try {
       const formData = new FormData();
       formData.append("image", file);
+      formData.append("skinType", answers.skinType || "");
+      formData.append("location", answers.location || "");
+      formData.append("duration", answers.duration || "");
 
       const res = await fetch("http://localhost:5000/api/classify-image", {
         method: "POST",

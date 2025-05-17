@@ -76,6 +76,47 @@ const Home = () => {
 
     fetchInitialMessage();
   }, []);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn("🛑 SpeechRecognition not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+      const speechResult = event.results[0][0].transcript;
+      setInput(speechResult); // You can also call handleSubmit() here
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onerror = (e) => {
+      console.error("Speech recognition error:", e);
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+  }, []);
+
+  const toggleMic = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      recognitionRef.current?.start();
+      setIsListening(true);
+    }
+  };
 
   return (
     <div className="chat-container">

@@ -58,17 +58,31 @@ def process_input():
         data = request.get_json()
         user_input = data.get('text', '')
 
-        diagnosis_note = ""
-        if 'diagnosis' in user_context:
-            diagnosis_note = f"The user has been diagnosed by the image model with '{user_context['diagnosis']}'. "
+        context_parts = []
 
-        full_prompt = diagnosis_note + user_input
+        if 'diagnosis' in user_context:
+            context_parts.append(f"The user has been diagnosed by the image model with '{user_context['diagnosis']}'.")
+
+        if 'skinType' in user_context:
+            context_parts.append(f"Their skin type is '{user_context['skinType']}'.")
+
+        if 'location' in user_context:
+            context_parts.append(f"The affected area is the '{user_context['location']}'.")
+
+        if 'duration' in user_context:
+            context_parts.append(f"The issue has been present for '{user_context['duration']}'.")
+
+        context_prompt = " ".join(context_parts)
+
+        # Combine with user's input
+        full_prompt = context_prompt + " " + user_input
 
         ai_response = ask_gpt(full_prompt)
         return jsonify({'reply': ai_response}), 200
 
     except Exception as e:
         return jsonify({'error': 'Something went wrong', 'details': str(e)}), 500
+
 
 
 
@@ -82,6 +96,11 @@ def classify_image():
         if file.filename == '':
             return jsonify({'error': 'Empty filename'}), 400
 
+        # Get extra form data
+        skin_type = request.form.get('skinType', 'Not provided')
+        location = request.form.get('location', 'Not provided')
+        duration = request.form.get('duration', 'Not provided')
+
         temp_path = f"temp_uploads/{uuid.uuid4().hex}_{file.filename}"
         os.makedirs("temp_uploads", exist_ok=True)
         file.save(temp_path)
@@ -94,8 +113,11 @@ def classify_image():
         if label is None:
             return jsonify({'error': 'Classification failed'}), 500
 
-        # Store context for use in GPT prompt
+        # Save for GPT context
         user_context['diagnosis'] = label
+        user_context['skinType'] = skin_type
+        user_context['location'] = location
+        user_context['duration'] = duration
 
         return jsonify({
             'label': label,
@@ -104,6 +126,7 @@ def classify_image():
 
     except Exception as e:
         return jsonify({'error': 'Something went wrong', 'details': str(e)}), 500
+
 
 
 if __name__ == '__main__':

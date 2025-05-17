@@ -74,3 +74,10 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+.mic-button {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  margin-left: 10px;
+  cursor: pointer;
+}
