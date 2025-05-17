@@ -1,14 +1,20 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Home from "./components/Home";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SkinWizard from "./pages/SkinWizard";
+import Home from "./pages/home";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Home />
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* Landing page */}
+          <Route path="/" element={<SkinWizard />} />
+
+          {/* GPT chat page */}
+          <Route path="/home" element={<Home />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

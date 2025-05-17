@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow.keras.preprocessing import image
 import os
 
-MODEL_PATH = "skin_disease_classifier.h5"
+MODEL_PATH = "skin_disease_classifier.keras"
 CLASS_NAMES_FILE = "class_names.txt"
 IMG_SIZE = (224, 224)
 
@@ -27,7 +27,7 @@ def classify_skin_image(model, img_path):
     print(f"📷 Classifying image: {img_path}")
     img = image.load_img(img_path, target_size=IMG_SIZE)
     img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
 
     predictions = model.predict(img_array)[0] 
     print(f"🔍 Model prediction: {predictions}")

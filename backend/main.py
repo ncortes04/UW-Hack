@@ -1,7 +1,10 @@
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 from classify import load_model, classify_skin_image
 
 def main():
-    test_image = r"C:\Users\troyr\Desktop\UW-Hack\dataset\test_set\FU-athlete-foot\FU-athlete-foot (1).jpeg"
+    test_image = r"C:\Users\troyr\Desktop\UW-Hack\dataset\test_set\BA-impetigo\60_BA-impetigo (3).png"
 
     try:
         model = load_model()
